@@ -13,6 +13,13 @@ const (
 	RollDuration = 20
 )
 
+var frameCounts = map[int]int{
+	0: 2,
+	2: 6,
+	3: 6,
+	5: 6,
+}
+
 type Player struct {
 	X, Y        float64
 	VX, VY      float64
@@ -87,13 +94,8 @@ func (p *Player) Update() {
 
 	p.tickCount++
 	if p.tickCount%5 == 0 {
-		switch p.AnimRow {
-		case 0:
-			p.frameIndex = (p.frameIndex + 1) % 4
-		case 2, 3:
-			p.frameIndex = (p.frameIndex + 1) % 6
-		case 5:
-			p.frameIndex = (p.frameIndex + 1) % 6
+		if count, ok := frameCounts[p.AnimRow]; ok {
+			p.frameIndex = (p.frameIndex + 1) % count
 		}
 	}
 }
