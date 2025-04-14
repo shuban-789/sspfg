@@ -9,6 +9,7 @@ import (
 const (
 	FrameWidth   = 32
 	FrameHeight  = 32
+	SpriteScale  = 1.5
 	RollDuration = 20
 )
 
@@ -92,15 +93,15 @@ func (p *Player) Update() {
 	}
 }
 
-
 func (p *Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	frame := getFrame(p.AnimRow, p.frameIndex)
 
 	if p.FacingLeft {
-		op.GeoM.Scale(-1, 1)
-		op.GeoM.Translate(p.X+FrameWidth, p.Y)
+		op.GeoM.Scale(-SpriteScale, SpriteScale)
+		op.GeoM.Translate(p.X+FrameWidth*SpriteScale, p.Y)
 	} else {
+		op.GeoM.Scale(SpriteScale, SpriteScale)
 		op.GeoM.Translate(p.X, p.Y)
 	}
 
