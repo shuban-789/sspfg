@@ -38,7 +38,7 @@ func main() {
 	}
 
 	ebiten.SetWindowSize(640, 480)
-	ebiten.SetWindowTitle("ssbc")
+	ebiten.SetWindowTitle("Super Simple Platformer Fighting Game")
 
 	game := &Game{
 		Player: Player{X: 100, Y: 100},
