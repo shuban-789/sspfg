@@ -14,7 +14,7 @@ const (
 )
 
 var frameCounts = map[int]int{
-	0: 2,
+	0: 4,
 	2: 6,
 	3: 6,
 	5: 6,
@@ -38,6 +38,7 @@ func (p *Player) Update() {
 	const jumpForce = -10
 
 	p.VY += gravity
+	prevRow := p.AnimRow
 
 	if ebiten.IsKeyPressed(ebiten.KeyR) && !p.Rolling {
 		p.Rolling = true
@@ -76,6 +77,10 @@ func (p *Player) Update() {
 		} else {
 			p.AnimRow = 0
 		}
+	}
+
+	if p.AnimRow != prevRow {
+		p.frameIndex = 0
 	}
 
 	if p.OnGround && ebiten.IsKeyPressed(ebiten.KeySpace) {
