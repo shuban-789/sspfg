@@ -86,10 +86,15 @@ func (p *Player) Update() {
 	}
 
 	p.tickCount++
-	if (p.VX != 0 || p.Rolling) && p.tickCount%5 == 0 {
-		p.frameIndex = (p.frameIndex + 1) % 6
-	} else if p.VX == 0 && !p.Rolling {
-		p.frameIndex = 0
+	if p.tickCount%5 == 0 {
+		switch p.AnimRow {
+		case 0:
+			p.frameIndex = (p.frameIndex + 1) % 4
+		case 2, 3:
+			p.frameIndex = (p.frameIndex + 1) % 6
+		case 5:
+			p.frameIndex = (p.frameIndex + 1) % 6
+		}
 	}
 }
 
@@ -111,7 +116,7 @@ func (p *Player) Draw(screen *ebiten.Image) {
 func getFrame(row, col int) *ebiten.Image {
 	x := col * FrameWidth
 	y := row * FrameHeight
-	return SpriteSheet.SubImage(
+	return KnightSpriteSheet.SubImage(
 		image.Rect(x, y, x+FrameWidth, y+FrameHeight),
 	).(*ebiten.Image)
 }
