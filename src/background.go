@@ -12,7 +12,11 @@ const (
 	ScreenHeight = 480
 )
 
-var BackgroundSpriteSheet *ebiten.Image
+var (
+	BackgroundSpriteSheet *ebiten.Image
+	bgTypes             = []string{"bluesky", "orangeksy", "purplesky", "cloudysky"}
+	currentBgType   	= bgTypes[0]
+)
 
 func getBackgroundTile(row, col int) *ebiten.Image {
 	x := col * TileSize
@@ -20,7 +24,7 @@ func getBackgroundTile(row, col int) *ebiten.Image {
 	return BackgroundSpriteSheet.SubImage(image.Rect(x, y, x+TileSize, y+TileSize)).(*ebiten.Image)
 }
 
-func generateRepeatedRow(tile [2]int, count int) [][2]int {
+func generateUniformRow(tile [2]int, count int) [][2]int {
 	row := make([][2]int, count)
 	for i := 0; i < count; i++ {
 		row[i] = tile
@@ -28,47 +32,33 @@ func generateRepeatedRow(tile [2]int, count int) [][2]int {
 	return row
 }
 
-func generateBackgroundLayout() [][][2]int {
-	var WidthTiles int
-	WidthTiles = ScreenWidth / TileSize
-	layout := [][][2]int{
-		generateRepeatedRow([2]int{9, 0}, WidthTiles),
-		generateRepeatedRow([2]int{9, 0}, WidthTiles),
-		generateRepeatedRow([2]int{9, 0}, WidthTiles),
-		generateRepeatedRow([2]int{10, 0}, WidthTiles),
-		generateRepeatedRow([2]int{11, 0}, WidthTiles),
-		generateRepeatedRow([2]int{11, 0}, WidthTiles),
-		generateRepeatedRow([2]int{11, 0}, WidthTiles),
-		generateRepeatedRow([2]int{11, 0}, WidthTiles),
-		generateRepeatedRow([2]int{11, 0}, WidthTiles),
-		generateRepeatedRow([2]int{11, 0}, WidthTiles),
-		generateRepeatedRow([2]int{11, 0}, WidthTiles),
-		generateRepeatedRow([2]int{11, 0}, WidthTiles),
-		generateRepeatedRow([2]int{12, 0}, WidthTiles),
-		generateRepeatedRow([2]int{13, 0}, WidthTiles),
-		generateRepeatedRow([2]int{13, 0}, WidthTiles),
-		generateRepeatedRow([2]int{13, 0}, WidthTiles),
-		generateRepeatedRow([2]int{13, 0}, WidthTiles),
-		generateRepeatedRow([2]int{13, 0}, WidthTiles),
-		generateRepeatedRow([2]int{13, 0}, WidthTiles),
-		generateRepeatedRow([2]int{13, 0}, WidthTiles),
-		generateRepeatedRow([2]int{13, 0}, WidthTiles),
-		generateRepeatedRow([2]int{14, 0}, WidthTiles),
-		generateRepeatedRow([2]int{15, 0}, WidthTiles),
-		generateRepeatedRow([2]int{15, 0}, WidthTiles),
-		generateRepeatedRow([2]int{15, 0}, WidthTiles),
-		generateRepeatedRow([2]int{15, 0}, WidthTiles),
-		generateRepeatedRow([2]int{15, 0}, WidthTiles),
-		generateRepeatedRow([2]int{15, 0}, WidthTiles),
-		generateRepeatedRow([2]int{15, 0}, WidthTiles),
-		generateRepeatedRow([2]int{15, 0}, WidthTiles),
+func repeatRow(tile [2]int, width, times int) [][][2]int {
+	rows := make([][][2]int, times)
+	repeated := generateUniformRow(tile, width)
+	for i := 0; i < times; i++ {
+		rows[i] = repeated
 	}
-	return layout
+	return rows
 }
 
-var backgroundLayout = generateBackgroundLayout()
-
 func DrawBackground(screen *ebiten.Image) {
+	var backgroundLayout [][][2]int
+
+	initTemplates()
+
+	switch currentBgType {
+		case "bluesky":
+			backgroundLayout = blueSkyTemplate
+		case "orangeksy":
+			backgroundLayout = orangeSkyTemplate
+		case "purplesky":
+			backgroundLayout = purpleSkyTemplate
+		case "cloudysky":
+			backgroundLayout = cloudySkyTemplate
+		default:
+			backgroundLayout = blueSkyTemplate
+	} 
+
 	for y, row := range backgroundLayout {
 		for x, tileID := range row {
 			tile := getBackgroundTile(tileID[0], tileID[1])
