@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image/color"
 	"log"
 	"os"
 
@@ -29,10 +28,8 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	screen.Fill(color.RGBA{135, 206, 235, 255})
-	ebitenutil.DrawRect(screen, 0, 432, 640, 48, color.RGBA{34, 139, 34, 255})
+	DrawBackground(screen)
 	g.Player.Draw(screen)
-	ebitenutil.DebugPrint(screen, "Use ← → to move, space to jump")
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -66,6 +63,7 @@ func initAudio() {
 func main() {
 	var err error
 	KnightSpriteSheet, _, err = ebitenutil.NewImageFromFile("../assets/sprites/knight.png")
+	BackgroundSpriteSheet, _, err = ebitenutil.NewImageFromFile("../assets/sprites/world_tileset.png")
 	if err != nil {
 		log.Fatal(err)
 	}
