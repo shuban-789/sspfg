@@ -29,6 +29,7 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	DrawBackground(screen)
+	DrawWorld(screen)
 	g.Player.Draw(screen)
 }
 
