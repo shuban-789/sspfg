@@ -34,13 +34,26 @@ type Player struct {
 }
 
 func (p *Player) checkCollisionX(world [][][2]int) {
+	if world == nil || len(world) == 0 || len(world[0]) == 0 {
+		return
+	}
+
 	left := int((p.X) / TileSize)
-	right := int((p.X + FrameWidth) / TileSize)
+	right := int((p.X + FrameWidth - 1) / TileSize)
 	top := int(p.Y / TileSize)
 	bottom := int((p.Y + FrameHeight - 1) / TileSize)
 
-	for y := top; y <= bottom && y < len(world); y++ {
-		for x := left; x <= right && x < len(world[0]); x++ {
+	worldHeight := len(world)
+	worldWidth := len(world[0])
+
+	for y := top; y <= bottom; y++ {
+		if y < 0 || y >= worldHeight {
+			continue
+		}
+		for x := left; x <= right; x++ {
+			if x < 0 || x >= worldWidth {
+				continue
+			}
 			if isSolidTile(world[y][x]) {
 				if p.VX > 0 {
 					p.X = float64(x*TileSize - FrameWidth)
@@ -54,17 +67,28 @@ func (p *Player) checkCollisionX(world [][][2]int) {
 	}
 }
 
-
 func (p *Player) checkCollisionY(world [][][2]int) {
-	left := int((p.X) / TileSize)
-	right := int((p.X + FrameWidth) / TileSize)
-	top := int(p.Y / TileSize)
-	bottom := int((p.Y + FrameHeight) / TileSize)
+	if world == nil || len(world) == 0 || len(world[0]) == 0 {
+		return
+	}
 
+	left := int((p.X) / TileSize)
+	right := int((p.X + FrameWidth - 1) / TileSize)
+	top := int(p.Y / TileSize)
+	bottom := int((p.Y + FrameHeight - 1) / TileSize)
+
+	worldHeight := len(world)
+	worldWidth := len(world[0])
 	p.OnGround = false
 
-	for y := top; y <= bottom && y < len(world); y++ {
-		for x := left; x <= right && x < len(world[0]); x++ {
+	for y := top; y <= bottom; y++ {
+		if y < 0 || y >= worldHeight {
+			continue
+		}
+		for x := left; x <= right; x++ {
+			if x < 0 || x >= worldWidth {
+				continue
+			}
 			if isSolidTile(world[y][x]) {
 				if p.VY > 0 {
 					p.Y = float64(y*TileSize - FrameHeight)
@@ -147,7 +171,27 @@ func (p *Player) Update(world [][][2]int) {
 			p.frameIndex = (p.frameIndex + 1) % count
 		}
 	}
+
+	scaledWidth := FrameWidth * SpriteScale
+	scaledHeight := FrameHeight * SpriteScale
+
+	if p.X < float64(0 - TileSize) {
+		p.X = float64(0 - TileSize)
+	}
+
+	if p.X+scaledWidth > float64(ScreenWidth + TileSize) {
+		p.X = float64(ScreenWidth + TileSize) - scaledWidth
+	}
+
+	if p.Y < float64(0 - TileSize) {
+		p.Y = float64(0 - TileSize)
+	}
+
+	if p.Y+scaledHeight > float64(ScreenHeight + TileSize) {
+		p.Y = float64(ScreenHeight + TileSize) - scaledHeight
+	}
 }
+
 
 func (p *Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
