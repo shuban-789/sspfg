@@ -23,7 +23,7 @@ func genWorldTemplateType1(biome int) [][][2]int {
 	void := [2]int{6, 0}
 	template = append(template, repeatRow(void, WidthTiles, 28)...)
 	template = append(template, generateUniformRow([2]int{0, biome}, WidthTiles)) // Land Chunk 1
-	template = append(template, generateUniformRow([2]int{0, biome}, WidthTiles)) // Land Chunk 2
+	template = append(template, generateUniformRow([2]int{1, biome}, WidthTiles)) // Land Chunk 2
 	return template
 }
 
