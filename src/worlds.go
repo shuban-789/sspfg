@@ -18,6 +18,11 @@ var (
 // Layout --> (w: 40 chunks, h: 30 chunks)
 // Reserve bottom 2 chunks for the base platform
 
+func isSolidTile(tile [2]int) bool {
+	tileID := tile[0]
+	return tileID != 6
+}
+
 func genWorldTemplateType1(biome int) [][][2]int {
 	var template [][][2]int
 	void := [2]int{6, 0}

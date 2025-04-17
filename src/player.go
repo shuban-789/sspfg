@@ -11,6 +11,7 @@ const (
 	FrameHeight  = 32
 	SpriteScale  = 1.5
 	RollDuration = 20
+	SpriteYOffset = -10
 )
 
 var frameCounts = map[int]int{
@@ -32,7 +33,53 @@ type Player struct {
 	RollTick    int
 }
 
-func (p *Player) Update() {
+func (p *Player) checkCollisionX(world [][][2]int) {
+	left := int((p.X) / TileSize)
+	right := int((p.X + FrameWidth) / TileSize)
+	top := int(p.Y / TileSize)
+	bottom := int((p.Y + FrameHeight - 1) / TileSize)
+
+	for y := top; y <= bottom && y < len(world); y++ {
+		for x := left; x <= right && x < len(world[0]); x++ {
+			if isSolidTile(world[y][x]) {
+				if p.VX > 0 {
+					p.X = float64(x*TileSize - FrameWidth)
+				} else if p.VX < 0 {
+					p.X = float64((x + 1) * TileSize)
+				}
+				p.VX = 0
+				return
+			}
+		}
+	}
+}
+
+
+func (p *Player) checkCollisionY(world [][][2]int) {
+	left := int((p.X) / TileSize)
+	right := int((p.X + FrameWidth) / TileSize)
+	top := int(p.Y / TileSize)
+	bottom := int((p.Y + FrameHeight) / TileSize)
+
+	p.OnGround = false
+
+	for y := top; y <= bottom && y < len(world); y++ {
+		for x := left; x <= right && x < len(world[0]); x++ {
+			if isSolidTile(world[y][x]) {
+				if p.VY > 0 {
+					p.Y = float64(y*TileSize - FrameHeight)
+					p.OnGround = true
+				} else if p.VY < 0 {
+					p.Y = float64((y + 1) * TileSize)
+				}
+				p.VY = 0
+				return
+			}
+		}
+	}
+}
+
+func (p *Player) Update(world [][][2]int) {
 	const gravity = 0.5
 	const moveSpeed = 2
 	const jumpForce = -10
@@ -89,13 +136,10 @@ func (p *Player) Update() {
 	}
 
 	p.X += p.VX
-	p.Y += p.VY
+	p.checkCollisionX(world)
 
-	if p.Y > 400 {
-		p.Y = 400
-		p.VY = 0
-		p.OnGround = true
-	}
+	p.Y += p.VY
+	p.checkCollisionY(world)
 
 	p.tickCount++
 	if p.tickCount%5 == 0 {
@@ -111,10 +155,10 @@ func (p *Player) Draw(screen *ebiten.Image) {
 
 	if p.FacingLeft {
 		op.GeoM.Scale(-SpriteScale, SpriteScale)
-		op.GeoM.Translate(p.X+FrameWidth*SpriteScale, p.Y)
+		op.GeoM.Translate(p.X+FrameWidth*SpriteScale, p.Y+SpriteYOffset)
 	} else {
 		op.GeoM.Scale(SpriteScale, SpriteScale)
-		op.GeoM.Translate(p.X, p.Y)
+		op.GeoM.Translate(p.X, p.Y+SpriteYOffset)
 	}
 
 	screen.DrawImage(frame, op)

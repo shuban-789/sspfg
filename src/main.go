@@ -23,7 +23,7 @@ type Game struct {
 }
 
 func (g *Game) Update() error {
-	g.Player.Update()
+	g.Player.Update(defaultWorldTemplate)
 	return nil
 }
 
