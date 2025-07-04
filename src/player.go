@@ -130,11 +130,11 @@ func (p *Player) Update(world [][][2]int) {
 	} else {
 		p.VX = 0
 
-		if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+		if ebiten.IsKeyPressed(ebiten.KeyLeft) || ebiten.IsKeyPressed(ebiten.KeyA) {
 			p.VX = -moveSpeed
 			p.FacingLeft = true
 		}
-		if ebiten.IsKeyPressed(ebiten.KeyRight) {
+		if ebiten.IsKeyPressed(ebiten.KeyRight) || ebiten.IsKeyPressed(ebiten.KeyD){
 			p.VX = moveSpeed
 			p.FacingLeft = false
 		}
