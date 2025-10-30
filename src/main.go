@@ -72,7 +72,7 @@ func main() {
 	initAudio()
 
 	ebiten.SetWindowSize(640, 480)
-	ebiten.SetWindowTitle("Super Simple Platformer Fighting Game")
+	ebiten.SetWindowTitle("sspfg")
 
 	game := &Game{
 		Player: Player{X: 100, Y: 100},
